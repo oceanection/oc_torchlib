@@ -32,6 +32,26 @@ def eval_loss(loader, device, net, criterion):
 
     return loss
 
+def calc_graph(loader, device, net, criterion):
+    # データローダーから最初の１セットを取得する
+    for images, labels in loader:
+        break
+
+    # デバイスの割り当て
+    inputs = images.to(device)
+    labels = labels.to(device)
+
+    # 予測計算
+    outputs = net(inputs)
+
+    # 損失計算
+    loss = criterion(outputs, labels)
+
+    # 計算グラフの作成
+    g = make_dot(loss, params=dict(net.named_parameters()))
+
+    return g
+
 def fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device, history):
     # tqdmライブラリのインポート
     from tqdm.notebook import tqdm
@@ -135,7 +155,7 @@ def evaluate_history(history):
         unit = num_epochs / 10
 
     # 学習曲線の表示 (損失)
-    plt.figure(figsize=(9,8))
+    plt.figure(figsize=(5,4))
     plt.plot(history[:,0], history[:,1], 'b', label='訓練')
     plt.plot(history[:,0], history[:,3], 'k', label='検証')
     plt.xticks(np.arange(0,num_epochs+1, unit))
@@ -146,7 +166,7 @@ def evaluate_history(history):
     plt.show()
 
     # 学習曲線の表示 (精度)
-    plt.figure(figsize=(9,8))
+    plt.figure(figsize=(5,4))
     plt.plot(history[:,0], history[:,2], 'b', label='訓練')
     plt.plot(history[:,0], history[:,4], 'k', label='検証')
     plt.xticks(np.arange(0,num_epochs+1,unit))
@@ -176,7 +196,7 @@ def show_images_labels(loader, classes, net, device):
       #images = images.to('cpu')
 
     # 最初のn_size個の表示
-    plt.figure(figsize=(20, 15))
+    plt.figure(figsize=(15, 10))
     for i in range(n_size):
         ax = plt.subplot(5, 10, i + 1)
         label_name = classes[labels[i]]
