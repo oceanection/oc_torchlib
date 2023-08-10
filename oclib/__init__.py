@@ -136,7 +136,7 @@ def fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device
         avg_train_loss = train_loss / n_train
         avg_val_loss = val_loss / n_test
         # 結果表示
-        print (f'Epoch [{(epoch+1)}/{num_epochs+base_epochs}], loss: {avg_train_loss:.5f} acc: {train_acc:.5f} val_loss: {avg_val_loss:.5f}, val_acc: {val_acc:.5f}')
+        print(f'Epoch [{(epoch+1)}/{num_epochs+base_epochs}], loss: {avg_train_loss:.5f} acc: {train_acc:.5f} val_loss: {avg_val_loss:.5f}, val_acc: {val_acc:.5f}')
         # 記録
         item = np.array([epoch+1, avg_train_loss, train_acc, avg_val_loss, val_acc])
         history = np.vstack((history, item))
