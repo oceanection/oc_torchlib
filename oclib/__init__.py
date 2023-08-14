@@ -52,7 +52,10 @@ def calc_graph(loader, device, net, criterion):
 
     return g
 
-def fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device, history):
+def fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device, history=None):
+    if history is None:
+        history = np.zeros((0, 5))
+    
     # tqdmライブラリのインポート
     from tqdm.notebook import tqdm
 
