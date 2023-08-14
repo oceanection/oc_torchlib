@@ -1,4 +1,24 @@
-CHECK = 'Success'
+README = """
+関数一覧
+
+損失関数の計算用
+eval_loss(loader, device, net, criterion)
+
+計算グラフの作成
+calc_graph(loader, device, net, criterion)
+
+学習
+fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device, history=None)
+
+学習の解析
+evaluate_history(history)
+
+イメージとラベルの表示
+show_images_labels(loader, classes, net, device)
+
+PyTorch乱数固定用
+def torch_seed(seed=123):
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -53,8 +73,7 @@ def calc_graph(loader, device, net, criterion):
     return g
 
 def fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device, history=None):
-    if history is None:
-        history = np.zeros((0, 5))
+    history = np.zeros((0, 5))
     
     # tqdmライブラリのインポート
     from tqdm.notebook import tqdm
@@ -234,3 +253,6 @@ def torch_seed(seed=123):
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
     torch.use_deterministic_algorithms = True
+
+
+print(README)
