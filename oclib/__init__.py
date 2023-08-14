@@ -212,10 +212,10 @@ def show_images_labels(loader, classes, net, device):
             c = 'k'
           else:
             c = 'b'
-          ax.set_title(label_name + ':' + predicted_name, c=c, fontsize=20)
+          ax.set_title(label_name + ':' + predicted_name, c=c, fontsize=10)
         # netがNoneの場合は、正解ラベルのみ表示
         else:
-          ax.set_title(label_name, fontsize=20)
+          ax.set_title(label_name, fontsize=10)
         # TensorをNumPyに変換
         image_np = images[i].numpy().copy()
         # 軸の順番変更 (channel, row, column) -> (row, column, channel)
