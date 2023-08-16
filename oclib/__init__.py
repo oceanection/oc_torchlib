@@ -1,3 +1,5 @@
+import os 
+
 import numpy as np
 import matplotlib.pyplot as plt
 import japanize_matplotlib
@@ -12,32 +14,32 @@ from torch.utils.data import Dataset, DataLoader
 import torchvision.datasets as datasets
 
 
-def save(net, path, history=True):
-    """学習済モデルの保存
+def save(net, history, path):
+    """学習済モデルと履歴の保存
     """
     if path != '':
         torch.save(net.state_dict(), f'{path}/model.pth')
+        np.savetxt(history, f'{path}/history.csv')
     else:
         torch.save(net.state_dict(), 'model.pth')
+        np.savetxt(history, 'history.csv')    
     
-    if history:
-        if path != '':
-            np.savetxt(f'{path}/history.csv')
-        else:
-            np.savetxt('history.csv')
-    
-def load(net, path, history=False):
+def load(net, path=''):
+    history = None
     if path != '':
         n = net.load_state_dict(torch.load(f'{path}/model.pth'))
+        if os.path.exists(f'{path}/history.csv'):
+            history = np.loadtxt(f'{path}/history.csv')
+            return (n, history)
+        else:
+            return (n, None)
     else:
         n = net.load_state_dict(torch.load('model.pth'))
-    
-    if history:
-        history = np.loadtxt(f'{path}/history.csv')
-        return (n, history)
-    else:    
-        return (n, None)
-
+        if os.path.exists('history.csv'):
+            history = np.loadtxt('history.csv')
+            return (n, history)
+        else:
+            return (n, None)
 
 # 損失計算用
 def eval_loss(loader, device, net, criterion):
