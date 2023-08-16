@@ -32,7 +32,25 @@ from torchviz import make_dot
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset, DataLoader
 import torchvision.datasets as datasets
-from tqdm.notebook import tqdm
+
+
+def save(net, path, history=True):
+    """学習済モデルの保存
+    """
+    torch.save(net.state_dict(), f'{path}/model.pth')
+    if history:
+        np.savetxt('f{path}/history.csv')
+    else:
+        pass
+    
+def load(net, path, history=False):
+    n = net.load_state_dict(torch.load(f'{path}/model.pth'))
+    if history:
+        history = np.loadtxt(f'{path}/history.csv')
+        return (n, history)
+    else:    
+        return (n, None)
+
 
 # 損失計算用
 def eval_loss(loader, device, net, criterion):
@@ -72,14 +90,16 @@ def calc_graph(loader, device, net, criterion):
 
     return g
 
-def fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device, history=None):
-    history = np.zeros((0, 5))
-    
+def fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device, history=None, save_path=''):
+    if history is None:
+        history = np.zeros((0, 5))
+    else:
+        base_epochs = len(history)
+  
     # tqdmライブラリのインポート
     from tqdm.notebook import tqdm
 
-    base_epochs = len(history)
-  
+    
     for epoch in range(base_epochs, num_epochs+base_epochs):
         # 1エポックあたりの正解数(精度計算用)
         n_train_acc, n_val_acc = 0, 0
@@ -162,6 +182,8 @@ def fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device
         # 記録
         item = np.array([epoch+1, avg_train_loss, train_acc, avg_val_loss, val_acc])
         history = np.vstack((history, item))
+        
+        save(net, save_path, history)
         
     return history
 
@@ -254,5 +276,3 @@ def torch_seed(seed=123):
     torch.backends.cudnn.deterministic = True
     torch.use_deterministic_algorithms = True
 
-
-print(README)
