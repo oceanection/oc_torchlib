@@ -19,10 +19,10 @@ def save(net, history, path):
     """
     if path != '':
         torch.save(net.state_dict(), os.path.join(path, 'model.pth'))
-        np.savetxt(history, f'{path}/history.csv')
+        np.savetxt(f'{path}/history.csv', history)
     else:
         torch.save(net.state_dict(), 'model.pth')
-        np.savetxt(history, 'history.csv')    
+        np.savetxt('history.csv', history)    
     
 def load(net, path=''):
     history = None
