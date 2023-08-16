@@ -18,7 +18,7 @@ def save(net, history, path):
     """学習済モデルと履歴の保存
     """
     if path != '':
-        torch.save(net.state_dict(), f'{path}/model.pth')
+        torch.save(net.state_dict(), os.path.join(path, 'model.pth'))
         np.savetxt(history, f'{path}/history.csv')
     else:
         torch.save(net.state_dict(), 'model.pth')
@@ -27,7 +27,7 @@ def save(net, history, path):
 def load(net, path=''):
     history = None
     if path != '':
-        n = net.load_state_dict(torch.load(f'{path}/model.pth'))
+        n = net.load_state_dict(torch.load(os.path.join(path, 'model.pth')))
         if os.path.exists(f'{path}/history.csv'):
             history = np.loadtxt(f'{path}/history.csv')
             return (n, history)
