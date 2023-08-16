@@ -1,25 +1,3 @@
-README = """
-関数一覧
-
-損失関数の計算用
-eval_loss(loader, device, net, criterion)
-
-計算グラフの作成
-calc_graph(loader, device, net, criterion)
-
-学習
-fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device, history=None)
-
-学習の解析
-evaluate_history(history)
-
-イメージとラベルの表示
-show_images_labels(loader, classes, net, device)
-
-PyTorch乱数固定用
-def torch_seed(seed=123):
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 import japanize_matplotlib
@@ -37,14 +15,23 @@ import torchvision.datasets as datasets
 def save(net, path, history=True):
     """学習済モデルの保存
     """
-    torch.save(net.state_dict(), f'{path}/model.pth')
-    if history:
-        np.savetxt('f{path}/history.csv')
+    if path != '':
+        torch.save(net.state_dict(), f'{path}/model.pth')
     else:
-        pass
+        torch.save(net.state_dict(), 'model.pth')
+    
+    if history:
+        if path != '':
+            np.savetxt(f'{path}/history.csv')
+        else:
+            np.savetxt('history.csv')
     
 def load(net, path, history=False):
-    n = net.load_state_dict(torch.load(f'{path}/model.pth'))
+    if path != '':
+        n = net.load_state_dict(torch.load(f'{path}/model.pth'))
+    else:
+        n = net.load_state_dict(torch.load('model.pth'))
+    
     if history:
         history = np.loadtxt(f'{path}/history.csv')
         return (n, history)
@@ -93,14 +80,13 @@ def calc_graph(loader, device, net, criterion):
 def fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device, history=None, save_path=''):
     if history is None:
         history = np.zeros((0, 5))
-    else:
-        base_epochs = len(history)
+
+    base_epochs = len(history)
   
     # tqdmライブラリのインポート
     from tqdm.notebook import tqdm
 
-    
-    for epoch in range(base_epochs, num_epochs+base_epochs):
+    for epoch in range(base_epochs, num_epochs + base_epochs):
         # 1エポックあたりの正解数(精度計算用)
         n_train_acc, n_val_acc = 0, 0
         # 1エポックあたりの累積損失(平均化前)
@@ -178,7 +164,7 @@ def fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device
         avg_train_loss = train_loss / n_train
         avg_val_loss = val_loss / n_test
         # 結果表示
-        print(f'Epoch [{(epoch+1)}/{num_epochs+base_epochs}], loss: {avg_train_loss:.5f} acc: {train_acc:.5f} val_loss: {avg_val_loss:.5f}, val_acc: {val_acc:.5f}')
+        print(f'Epoch [{(epoch+1)}/{num_epochs + base_epochs}], loss: {avg_train_loss:.5f} acc: {train_acc:.5f} val_loss: {avg_val_loss:.5f}, val_acc: {val_acc:.5f}')
         # 記録
         item = np.array([epoch+1, avg_train_loss, train_acc, avg_val_loss, val_acc])
         history = np.vstack((history, item))
