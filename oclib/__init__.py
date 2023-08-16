@@ -171,7 +171,7 @@ def fit(net, optimizer, criterion, num_epochs, train_loader, test_loader, device
         item = np.array([epoch+1, avg_train_loss, train_acc, avg_val_loss, val_acc])
         history = np.vstack((history, item))
         
-        save(net, save_path, history)
+        save(net, history, save_path)
         
     return history
 
