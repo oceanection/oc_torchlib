@@ -1,21 +1,29 @@
 import os
 from glob import glob
 from collections import deque
-
-import torch
-from torch import tensor
-import torch.nn as nn
-import torch.optim as optim
-
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 from torchvision.io import read_image
 
-import numpy as np
-import matplotlib.pyplot as plt
-import japanize_matplotlib
+
+class MyDataset2(Dataset):
+    def __init__(self, img_path, transform=None):
+        self.img_path = img_path
+        self.transform = transform
+        
+        self.img_files = glob(f'{os.path.abspath(img_path)}/*')
+        self.dname = os.path.basename(img_path)
+            
+    def __len__(self):
+        return len(self.img_files)
+    
+    def __getitem__(self,idx):
+        img = read_image(self.img_files[idx])
+        if self.transform:
+            img = self.transform(img)
+        return img, self.dname
 
 class MyDataset(Dataset):
     def __init__(self, img_path, transform=None):
